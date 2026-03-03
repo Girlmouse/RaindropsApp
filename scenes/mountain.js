@@ -207,14 +207,16 @@ SceneManager.register('mountain', {
 
     // Moon reflection — wavy shimmer strips
     const mrX = w * 0.30, mrY = lakeCY - lakeRY * 0.3;
+    const ts = t * 0.001;
     c.save();
-    for (let i = 0; i < 7; i++) {
-      const stripY = mrY - 18 + i * 7;
-      const stripW = (22 - Math.abs(i - 3) * 5) * (0.8 + Math.sin(t * 0.002 + i * 0.8) * 0.2);
-      const stripX = mrX + Math.sin(t * 0.0015 + i * 1.2) * 4;
-      const alpha = (0.35 - Math.abs(i - 3) * 0.06) * (0.7 + Math.sin(t * 0.002 + i) * 0.3);
-      c.fillStyle = `rgba(220,230,245,${alpha})`;
-      c.beginPath(); c.ellipse(stripX, stripY, Math.max(stripW, 2), 2.5, 0, 0, Math.PI * 2); c.fill();
+    for (let i = 0; i < 9; i++) {
+      const stripY = mrY - 28 + i * 7;
+      const baseW = 28 - Math.abs(i - 4) * 5;
+      const stripW = Math.max(baseW * (0.7 + Math.sin(ts * 1.8 + i * 1.1) * 0.3), 3);
+      const stripX = mrX + Math.sin(ts * 1.2 + i * 0.9) * 12; // bigger wobble
+      const alpha = (0.4 - Math.abs(i - 4) * 0.04) * (0.6 + Math.sin(ts * 1.8 + i * 1.3) * 0.4);
+      c.fillStyle = `rgba(220,230,245,${Math.max(alpha, 0)})`;
+      c.beginPath(); c.ellipse(stripX, stripY, stripW, 3, 0, 0, Math.PI * 2); c.fill();
     }
     c.restore();
 

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Raindrops — A message for you</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #f5f0eb;
+            font-family: 'Pangolin', cursive;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rain-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .raindrop-bg {
+            position: absolute;
+            top: -20px;
+            color: #c5c0bb;
+            opacity: 0.4;
+            font-size: 20px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0%   { transform: translateY(-20px); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .message-container {
+            max-width: 400px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .message {
+            color: #1b2328;
+            font-size: clamp(16px, 4.5vw, 20px);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .greeting  { font-weight: 500; margin-bottom: 5px; }
+        .signature { font-weight: 600; margin-top: 10px; }
+
+        .heart-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-right: 20px;
+        }
+
+        .heart {
+            width: 110px;
+            height: 100px;
+            position: relative;
+            transform: rotate(-5deg);
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 55px;
+            height: 85px;
+            background-color: #ffbd59;
+            border-radius: 55px 55px 0 0;
+        }
+
+        .heart::before {
+            left: 55px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+
+        .heart::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 40px;
+            left: 30px;
+            background-color: #1b2328;
+            color: #f5f0eb;
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-family: 'Pangolin', cursive;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 20;
+        }
+
+        .back-btn:hover  { transform: translateY(-2px); box-shadow: 4px 4px 15px rgba(0,0,0,0.3); }
+        .back-btn:active { transform: translateY(1px);  box-shadow: 2px 2px 6px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="rain-container" id="rainContainer"></div>
+
+        <div class="message-container">
+            <div class="message">
+                <p class="greeting">Hey friend,</p>
+                <p>Thank you for giving Raindrops a chance. I built this with love and I hope you're enjoying it.</p>
+            </div>
+
+            <div class="message">
+                <p>Rain is a nice reminder to slow down, to pause, to take a break. Breathe. Stay as long as you want and come back whenever you need a place to just be.</p>
+            </div>
+
+            <div class="message">
+                <p class="signature">— LunaBelleGames</p>
+            </div>
+
+            <div class="heart-container">
+                <div class="heart"></div>
+            </div>
+        </div>
+
+        <button class="back-btn" id="backBtn">← Back</button>
+    </div>
+
+    <script>
+        function createRain() {
+            const container = document.getElementById('rainContainer');
+            for (let i = 0; i < 30; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop-bg';
+                drop.innerHTML = '💧';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (10 + Math.random() * 10) + 's';
+                drop.style.animationDelay = (-Math.random() * 12) + 's';
+                drop.style.fontSize = (14 + Math.random() * 10) + 'px';
+                container.appendChild(drop);
+            }
+        }
+
+        document.getElementById('backBtn').addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+
+        createRain();
+    </script>
+</body>
+</html>
