@@ -205,28 +205,18 @@ SceneManager.register('mountain', {
     c.fillStyle = lakeGrad;
     c.beginPath(); c.ellipse(lakeCX, lakeCY, lakeRX, lakeRY, 0, 0, Math.PI * 2); c.fill();
 
-    // Ripples
+    // Moon reflection — wavy shimmer strips
+    const mrX = w * 0.30, mrY = lakeCY - lakeRY * 0.3;
     c.save();
-    for (let i = 0; i < 6; i++) {
-      const ry = lakeCY - lakeRY * 0.5 + i * 12;
-      const rp = t * 0.001 + i * 0.5;
-      const rw = lakeRX * (1 - Math.abs(i - 2.5) / 4);
-      c.strokeStyle = `rgba(60,80,100,${0.08 - i * 0.01})`; c.lineWidth = 1;
-      c.beginPath();
-      for (let x = lakeCX - rw; x < lakeCX + rw; x += 5) {
-        const wy = ry + Math.sin(x * 0.02 + rp) * (2 + Math.sin(rp * 0.7) * 1.5);
-        if (x === lakeCX - rw) c.moveTo(x, wy); else c.lineTo(x, wy);
-      }
-      c.stroke();
+    for (let i = 0; i < 7; i++) {
+      const stripY = mrY - 18 + i * 7;
+      const stripW = (22 - Math.abs(i - 3) * 5) * (0.8 + Math.sin(t * 0.002 + i * 0.8) * 0.2);
+      const stripX = mrX + Math.sin(t * 0.0015 + i * 1.2) * 4;
+      const alpha = (0.35 - Math.abs(i - 3) * 0.06) * (0.7 + Math.sin(t * 0.002 + i) * 0.3);
+      c.fillStyle = `rgba(220,230,245,${alpha})`;
+      c.beginPath(); c.ellipse(stripX, stripY, Math.max(stripW, 2), 2.5, 0, 0, Math.PI * 2); c.fill();
     }
     c.restore();
-
-    // Moon reflection
-    const mrX = w * 0.30, mrY = lakeCY - lakeRY * 0.3;
-    const mg = c.createRadialGradient(mrX, mrY, 0, mrX, mrY, 45);
-    mg.addColorStop(0, 'rgba(200,210,230,0.35)'); mg.addColorStop(1, 'rgba(120,140,170,0)');
-    c.fillStyle = mg; c.beginPath(); c.ellipse(mrX, mrY, 38, 16, 0, 0, Math.PI * 2); c.fill();
-    c.fillStyle = 'rgba(220,230,245,0.3)'; c.beginPath(); c.ellipse(mrX, mrY, 16, 7, 0, 0, Math.PI * 2); c.fill();
 
     // Bushes
     if (!this._bushData) this._bushData = this._buildBushes(w, h);
