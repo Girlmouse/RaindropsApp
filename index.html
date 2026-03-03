@@ -315,6 +315,10 @@
         _sceneEl.setAttribute('aria-hidden', 'true');
         _menuEl.style.display = '';
 
+        // Hide glow toggle — only visible inside scenes
+        const gt = document.getElementById('glowToggle');
+        if (gt) { gt.style.opacity = '0'; gt.style.pointerEvents = 'none'; }
+
         // Set audio to quiet menu level
         AudioEngine.setMenuLevel();
       }
@@ -345,8 +349,9 @@
         drop.className = 'raindrop-bg';
         drop.innerHTML = '💧';
         drop.style.left = Math.random() * 100 + '%';
+        drop.style.top = '-20px';
         drop.style.animationDuration = (8 + Math.random() * 8) + 's';
-        drop.style.animationDelay = Math.random() * 10 + 's';
+        drop.style.animationDelay = (-Math.random() * 10) + 's';  // negative delay = already mid-fall on load
         drop.style.fontSize = (10 + Math.random() * 8) + 'px';
         container.appendChild(drop);
       }
@@ -370,10 +375,20 @@
       SceneManager.showScene('space');
     });
 
-    // Unlock audio on any menu tap
-    document.getElementById('menuScreen').addEventListener('pointerdown', () => {
+    // Start menu ambient rain audio on first tap anywhere
+    const MENU_RAIN_TRACKS = [{ id: 'rain', src: 'audio/rain.mp3', volume: 1.0 }];
+    let menuAudioStarted = false;
+
+    function startMenuAudio() {
+      if (menuAudioStarted) return;
+      menuAudioStarted = true;
       AudioEngine.unlock();
-    }, { once: true, capture: true });
+      AudioEngine.playScene(MENU_RAIN_TRACKS);
+      AudioEngine.setMenuLevel();
+    }
+
+    document.getElementById('menuScreen').addEventListener('pointerdown', startMenuAudio, { capture: true });
+    document.getElementById('menuScreen').addEventListener('touchstart', startMenuAudio, { capture: true, passive: true });
 
     createMenuRain();
   </script>
