@@ -261,6 +261,9 @@ const AudioEngine = (() => {
   window.addEventListener('pause', suspend);   // Capacitor
   window.addEventListener('resume', resume);   // Capacitor
 
+  // Expose AudioContext for scenes that need custom synth sounds
+  function _getContext() { return _actx; }
+
   return {
     unlock,
     playScene,
@@ -273,6 +276,7 @@ const AudioEngine = (() => {
     playEnd,
     suspend,
     resume,
+    _getContext,
   };
 
 })();
