@@ -233,7 +233,7 @@ SceneManager.register('space', {
     const c = canvas.getContext('2d');
 
     // Resize check handled by SceneManager
-    const w = canvas.width / 2, h = canvas.height / 2;
+    const w = parseInt(canvas.style.width)||canvas.width/2, h = parseInt(canvas.style.height)||canvas.height/2;
 
     if (this._fadeIn < 1) this._fadeIn += 0.005;
 
@@ -322,7 +322,7 @@ SceneManager.register('space', {
     this._moonPebbles = null; this._moonDust = null; this._moonCracks = null;
 
     // Build moon assets at current size
-    const w = canvas.width/2, h = canvas.height/2;
+    const w = parseInt(canvas.style.width)||canvas.width/2, h = parseInt(canvas.style.height)||canvas.height/2;
     this._craters    = this._buildCraters(w, h);
     this._moonRocks  = this._buildRocks(w, h);
     this._moonPebbles= this._buildPebbles(w, h);
@@ -339,11 +339,11 @@ SceneManager.register('space', {
       }
 
       const r = canvas.getBoundingClientRect();
-      const sx = (canvas.width/2)/r.width, sy = (canvas.height/2)/r.height;
+      const sx = (parseInt(canvas.style.width)||canvas.width/2)/r.width, sy = (parseInt(canvas.style.height)||canvas.height/2)/r.height;
       const px = e.touches ? e.touches[0].clientX : e.clientX;
       const py = e.touches ? e.touches[0].clientY : e.clientY;
       const x = (px-r.left)*sx, y = (py-r.top)*sy;
-      const cw = canvas.width/2, ch = canvas.height/2;
+      const cw = parseInt(canvas.style.width)||canvas.width/2, ch = parseInt(canvas.style.height)||canvas.height/2;
 
       // Home button hit test
       const c2 = canvas.getContext('2d');

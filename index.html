@@ -389,6 +389,18 @@
     document.getElementById('menuScreen').addEventListener('pointerdown', startMenuAudio, { capture: true });
     document.getElementById('menuScreen').addEventListener('touchstart', startMenuAudio, { capture: true, passive: true });
 
+    // Resume audio when returning from about page (or any navigation)
+    window.addEventListener('pageshow', (e) => {
+      if (!menuAudioStarted) return;
+      try {
+        const actx = AudioEngine._getContext && AudioEngine._getContext();
+        if (actx && actx.state === 'suspended') actx.resume();
+        // Re-start menu rain if it faded out
+        AudioEngine.playScene(MENU_RAIN_TRACKS);
+        AudioEngine.setMenuLevel();
+      } catch(err) {}
+    });
+
     createMenuRain();
   </script>
 
