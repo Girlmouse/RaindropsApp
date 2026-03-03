@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Raindrops — A moment in time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1b2328">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background-color: #1b2328;
+      font-family: 'Pangolin', cursive;
+    }
+
+    /* ── Menu screen ── */
+    #menuScreen {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: space-between;
+      padding: 40px 20px 30px 20px;
+      position: relative; overflow: hidden;
+    }
+
+    .rain-container {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; overflow: hidden;
+    }
+
+    .raindrop-bg {
+      position: absolute; color: #8ccbea; opacity: 0.15;
+      font-size: 16px; animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-20px); }
+      100% { transform: translateY(100vh); }
+    }
+
+    .title {
+      font-size: clamp(36px, 10vw, 56px);
+      color: #a6a6a6;
+      text-shadow: 4px 4px 6px rgba(0,0,0,0.5);
+      letter-spacing: 2px; z-index: 10;
+      text-transform: uppercase; margin-bottom: -10px;
+    }
+
+    .cloud-section { display: flex; flex-direction: column; align-items: center; z-index: 10; }
+
+    .cloud {
+      background-color: #a6a6a6; padding: 15px 22px;
+      border-radius: 40px; position: relative;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+    }
+    .cloud::before {
+      content: ''; position: absolute; top: -12px; left: 25px;
+      width: 30px; height: 22px; background-color: #a6a6a6; border-radius: 50%;
+    }
+    .cloud::after {
+      content: ''; position: absolute; top: -18px; left: 48px;
+      width: 38px; height: 30px; background-color: #a6a6a6; border-radius: 50%;
+    }
+    .cloud-text { color: #1b2328; font-size: clamp(12px, 3.5vw, 15px); text-align: center; line-height: 1.5; }
+
+    .cloud-drops { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+    .cloud-drop {
+      width: 10px; height: 14px;
+      background-color: #a6a6a6;
+      border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+      opacity: 0.8;
+    }
+    .cloud-drop:nth-child(2) { height: 18px; width: 11px; margin-top: 4px; }
+    .cloud-drop:nth-child(4) { height: 16px; margin-top: 6px; }
+
+    .earth-container { position: absolute; right: 30px; top: 38%; z-index: 10; }
+    .glowdrop-container { position: absolute; left: 30px; top: 45%; z-index: 10; }
+
+    .glow-drop {
+      position: relative; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform 0.2s ease;
+      background: none; border: none; padding: 0; margin: 0; border-radius: 999px;
+    }
+    .glow-drop svg {
+      width: 24px; height: 34px; display: block; margin: 0 auto;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.7));
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    .hi-text {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      font-family: 'Pangolin', cursive; font-size: 14px; letter-spacing: 1px;
+      color: rgba(10,20,25,0.9); text-shadow: 0 0 8px rgba(255,255,255,0.55);
+      pointer-events: none; user-select: none;
+    }
+    .glow-drop:hover { transform: scale(1.1); }
+    .glow-drop:active { transform: scale(0.95); }
+
+    @keyframes glowPulse {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+      50%       { filter: drop-shadow(0 0 20px rgba(255,255,255,0.9)); }
+    }
+
+    .earth {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #5eb5e0 0%, #489fd4 40%, #2a7ab8 70%, #1a5a8a 100%);
+      box-shadow: 0 0 15px 8px rgba(255,255,255,0.4);
+      animation: earthPulse 3s ease-in-out infinite;
+      cursor: pointer; transition: transform 0.2s ease; overflow: hidden;
+    }
+    .earth:hover { transform: scale(1.1); }
+    .earth:active { transform: scale(0.95); }
+    .earth::before {
+      content: ''; position: absolute; top: 8px; left: 6px;
+      width: 14px; height: 11px; background-color: #4a9f4a;
+      border-radius: 40% 60% 50% 50%; transform: rotate(-10deg);
+      box-shadow: 8px 12px 0 -2px #4a9f4a, -2px -4px 0 1px rgba(255,255,255,0.7), 12px -2px 0 2px rgba(255,255,255,0.5);
+    }
+    .earth::after {
+      content: ''; position: absolute; bottom: 9px; right: 6px;
+      width: 10px; height: 9px; background-color: #4a9f4a;
+      border-radius: 50% 40% 60% 40%; transform: rotate(20deg);
+      box-shadow: -12px -8px 0 1px rgba(255,255,255,0.6), 4px -14px 0 2px rgba(255,255,255,0.5);
+    }
+    @keyframes earthPulse {
+      0%, 100% { box-shadow: 0 0 20px 10px rgba(255,255,255,0.3); }
+      50%       { box-shadow: 0 0 30px 15px rgba(255,255,255,0.5); }
+    }
+
+    .pick-place {
+      background-color: #64899b; padding: 10px 20px;
+      border-radius: 20px; box-shadow: 3px 3px 6px rgba(0,0,0,0.3); margin-bottom: 15px;
+    }
+    .pick-place-text { color: #aad6ef; font-size: clamp(12px, 3.5vw, 15px); text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+
+    .scenes-container {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 10px; width: 100%; max-width: 350px; z-index: 10;
+    }
+    .scene-row { display: flex; justify-content: center; gap: 10px; }
+
+    .scene-btn {
+      padding: 10px 16px; border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.2);
+      font-family: 'Pangolin', cursive; font-size: clamp(12px, 3.5vw, 15px);
+      cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-width: 85px; text-align: center; text-decoration: none;
+      display: inline-block; box-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+    }
+    .scene-btn:hover  { transform: translateY(-2px); box-shadow: 4px 4px 10px rgba(0,0,0,0.4); }
+    .scene-btn:active { transform: translateY(1px);  box-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+    .btn-ocean    { background-color: #075c89; color: #46809f; }
+    .btn-forest   { background-color: #265240; color: #8bc99a; }
+    .btn-mountain { background-color: #314b69; color: #c3c3c3; }
+    .btn-swamp    { background-color: #17290f; color: #58891a; }
+    .btn-noir     { background-color: #1b2328; color: #ffffff; }
+    .btn-city     { background-color: #2a1557; color: #ffbd59; }
+
+    .tagline { color: #a6a6a6; opacity: 0.5; font-size: 14px; z-index: 10; margin-top: 10px; }
+
+    /* ── Scene screen ── */
+    #sceneScreen {
+      position: fixed; inset: 0;
+      display: none;
+      background: #000;
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+    }
+    #sceneScreen.show { display: flex; }
+
+    #sceneCanvas {
+      display: block;
+      touch-action: none;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Glow toggle (shared, lives outside scene canvas) ── */
+    #glowToggle {
+      position: fixed; left: 0; top: 0;
+      width: 54px; height: 54px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; border: none; background: rgba(0,0,0,0);
+      padding: 0; margin: 0; z-index: 9999; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #glowToggle .glowToggleIcon { width: 24px; height: 34px; display: block; }
+    #glowToggle svg {
+      width: 100%; height: 100%;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.7));
+    }
+    #glowToggleLabel {
+      font-family: 'Helvetica Neue', -apple-system, sans-serif;
+      font-size: 10px; letter-spacing: 1.2px; color: rgba(255,255,255,0.7);
+    }
+    #glowToggle.off svg { filter: drop-shadow(0 0 0 rgba(255,255,255,0)); opacity: 0.35; }
+    #glowToggle.off #glowToggleLabel { color: rgba(255,255,255,0.35); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Menu Screen ── -->
+  <div id="menuScreen">
+    <div class="rain-container" id="rainContainer"></div>
+
+    <h1 class="title">Raindrops</h1>
+
+    <div class="cloud-section">
+      <div class="cloud">
+        <p class="cloud-text">Watch the rain.<br>Catch some drops.<br>Stay as long as you want.</p>
+      </div>
+      <div class="cloud-drops">
+        <div class="cloud-drop"></div><div class="cloud-drop"></div>
+        <div class="cloud-drop"></div><div class="cloud-drop"></div>
+        <div class="cloud-drop"></div>
+      </div>
+    </div>
+
+    <div class="earth-container">
+      <div class="earth" id="earth" title="Somewhere special"></div>
+    </div>
+
+    <div class="glowdrop-container">
+      <div class="glow-drop" id="glowDrop" title="A message for you">
+        <span class="hi-text">✋</span>
+        <svg viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 0 C15 0 0 20 0 28 C0 36 7 42 15 42 C23 42 30 36 30 28 C30 20 15 0 15 0 Z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="scenes-container">
+      <div class="pick-place"><span class="pick-place-text">Pick a place</span></div>
+      <div class="scene-row">
+        <button class="scene-btn btn-ocean"    data-scene="ocean">Ocean</button>
+        <button class="scene-btn btn-forest"   data-scene="forest">Forest</button>
+        <button class="scene-btn btn-mountain" data-scene="mountain">Mountain</button>
+      </div>
+      <div class="scene-row">
+        <button class="scene-btn btn-swamp"    data-scene="swamp">Swamp</button>
+        <button class="scene-btn btn-noir"     data-scene="noir">Noir</button>
+        <button class="scene-btn btn-city"     data-scene="city">City</button>
+      </div>
+    </div>
+
+    <p class="tagline">Raindrops — A moment in time</p>
+  </div>
+
+  <!-- ── Scene Screen ── -->
+  <div id="sceneScreen" aria-hidden="true">
+    <canvas id="sceneCanvas"></canvas>
+  </div>
+
+  <!-- ── Glow toggle (shared UI, positioned by game engine) ── -->
+  <button id="glowToggle" type="button" aria-label="Toggle glowing drops">
+    <span class="glowToggleIcon">
+      <svg viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M15 0 C15 0 0 20 0 28 C0 36 7 42 15 42 C23 42 30 36 30 28 C30 20 15 0 15 0 Z" fill="white"/>
+      </svg>
+    </span>
+    <span id="glowToggleLabel">ON</span>
+  </button>
+
+  <!-- ── Shared engines ── -->
+  <script src="shared/audio-engine.js"></script>
+  <script src="shared/game-engine.js"></script>
+
+  <!-- ── Scene Manager ── -->
+  <script>
+    const SceneManager = (() => {
+      const _scenes = {};
+      let _activeScene = null;
+      const _menuEl = document.getElementById('menuScreen');
+      const _sceneEl = document.getElementById('sceneScreen');
+      const _canvas = document.getElementById('sceneCanvas');
+
+      function register(id, sceneObj) {
+        _scenes[id] = sceneObj;
+      }
+
+      function showScene(id) {
+        const scene = _scenes[id];
+        if (!scene) { console.warn('[SceneManager] Unknown scene:', id); return; }
+
+        // Unlock audio on scene entry
+        AudioEngine.unlock();
+
+        // Hide menu, show scene
+        _menuEl.style.display = 'none';
+        _sceneEl.classList.add('show');
+        _sceneEl.setAttribute('aria-hidden', 'false');
+
+        _activeScene = scene;
+        scene.init(_canvas);
+      }
+
+      function showMenu() {
+        if (_activeScene) {
+          _activeScene.stop();
+          _activeScene = null;
+        }
+        _sceneEl.classList.remove('show');
+        _sceneEl.setAttribute('aria-hidden', 'true');
+        _menuEl.style.display = '';
+
+        // Set audio to quiet menu level
+        AudioEngine.setMenuLevel();
+      }
+
+      // Expose for game engine's _exitToMenu
+      window.SceneManager = { register, showScene, showMenu };
+      return { register, showScene, showMenu };
+    })();
+  </script>
+
+  <!-- ── Scene files ── -->
+  <script src="scenes/city.js"></script>
+  <!-- More scenes added here as they are migrated: -->
+  <!-- <script src="scenes/forest.js"></script>   -->
+  <!-- <script src="scenes/ocean.js"></script>    -->
+  <!-- <script src="scenes/mountain.js"></script> -->
+  <!-- <script src="scenes/swamp.js"></script>    -->
+  <!-- <script src="scenes/noir.js"></script>     -->
+  <!-- <script src="scenes/space.js"></script>    -->
+
+  <!-- ── Menu logic ── -->
+  <script>
+    // Animated rain drops on menu background
+    function createMenuRain() {
+      const container = document.getElementById('rainContainer');
+      for (let i = 0; i < 40; i++) {
+        const drop = document.createElement('div');
+        drop.className = 'raindrop-bg';
+        drop.innerHTML = '💧';
+        drop.style.left = Math.random() * 100 + '%';
+        drop.style.animationDuration = (8 + Math.random() * 8) + 's';
+        drop.style.animationDelay = Math.random() * 10 + 's';
+        drop.style.fontSize = (10 + Math.random() * 8) + 'px';
+        container.appendChild(drop);
+      }
+    }
+
+    // Scene buttons
+    document.querySelectorAll('.scene-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const scene = btn.getAttribute('data-scene');
+        if (scene) SceneManager.showScene(scene);
+      });
+    });
+
+    // Glow drop → about page
+    document.getElementById('glowDrop').addEventListener('click', () => {
+      window.location.href = 'about.html';
+    });
+
+    // Earth → space scene
+    document.getElementById('earth').addEventListener('click', () => {
+      SceneManager.showScene('space');
+    });
+
+    // Unlock audio on any menu tap
+    document.getElementById('menuScreen').addEventListener('pointerdown', () => {
+      AudioEngine.unlock();
+    }, { once: true, capture: true });
+
+    createMenuRain();
+  </script>
+
+</body>
+</html>
