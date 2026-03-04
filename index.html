@@ -319,8 +319,11 @@
         const gt = document.getElementById('glowToggle');
         if (gt) { gt.style.opacity = '0'; gt.style.pointerEvents = 'none'; }
 
-        // Set audio to quiet menu level
-        AudioEngine.setMenuLevel();
+        // Resume menu rain
+        if (menuAudioStarted) {
+          AudioEngine.playScene(MENU_RAIN_TRACKS);
+          AudioEngine.setMenuLevel();
+        }
       }
 
       // Expose for game engine's _exitToMenu
