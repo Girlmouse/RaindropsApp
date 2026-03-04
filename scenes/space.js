@@ -51,11 +51,11 @@ SceneManager.register('space', {
 
   _getHomeBtnRect(cw, ch) {
     this._c.save();
-    this._c.font = "600 15px 'Helvetica Neue',sans-serif";
+    this._c.font = "600 13px 'Helvetica Neue',sans-serif";
     const tw = this._c.measureText('⌂ home').width;
     this._c.restore();
     const pad = 10;
-    return { x: cw - 14 - tw - pad, y: ch - 14 - 20, w: tw + pad * 2, h: 28 };
+    return { x: 12, y: ch - 14 - 28, w: tw + pad * 2, h: 28 };
   },
 
   _buildStars(w, h) {
@@ -244,8 +244,8 @@ SceneManager.register('space', {
     c.save();
     c.fillStyle='rgba(8,14,40,0.80)';c.beginPath();c.roundRect(hb.x,hb.y,hb.w,hb.h,8);c.fill();
     c.strokeStyle='rgba(140,160,220,0.3)';c.lineWidth=1;c.beginPath();c.roundRect(hb.x,hb.y,hb.w,hb.h,8);c.stroke();
-    c.font="600 15px 'Helvetica Neue',sans-serif";c.fillStyle='rgba(200,218,255,0.95)';c.textAlign='right';
-    c.fillText('⌂ home',cw-14,ch-14);
+    c.font="600 13px 'Helvetica Neue',sans-serif";c.fillStyle='rgba(200,218,255,0.95)';c.textAlign='left';
+    c.fillText('⌂ home',hb.x+10,hb.y+hb.h/2+5);
     c.restore();
 
     this._raf=requestAnimationFrame(()=>this._loop());
@@ -263,7 +263,7 @@ SceneManager.register('space', {
     this._tapHandler=(e)=>{
       e.preventDefault();
       AudioEngine.unlock();
-      if(!AudioEngine.isStarted())AudioEngine.playScene(self.tracks);
+      AudioEngine.playScene(self.tracks);
       const{w:cw,h:ch}=self._getSize();
       const{x,y}=self._getPos(e);
       const hb=self._getHomeBtnRect(cw,ch);
