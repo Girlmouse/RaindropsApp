@@ -269,7 +269,7 @@ SceneManager.register('space', {
       const hb=self._getHomeBtnRect(cw,ch);
       if(x>=hb.x&&x<=hb.x+hb.w&&y>=hb.y&&y<=hb.y+hb.h){
         AudioEngine.fadeOut(1.5);
-        setTimeout(()=>SceneManager.showScene(null),200);
+        setTimeout(()=>SceneManager.showMenu(),200);
         return;
       }
       let caught=false;
