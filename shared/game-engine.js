@@ -569,6 +569,11 @@ const RainEngine = (() => {
     _cfg = cfg;
     _hooks = hooks;
     _glowEnabled = true;
+    // Sync button UI to ON state
+    const _gt = document.getElementById('glowToggle');
+    const _gl = document.getElementById('glowToggleLabel');
+    if (_gt) _gt.classList.remove('off');
+    if (_gl) _gl.textContent = 'ON';
     _quoteIndex = 0;
 
     // Reset game state
